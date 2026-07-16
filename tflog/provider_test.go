@@ -10,6 +10,7 @@ import (
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
+	"github.com/hashicorp/go-hclog"
 	"github.com/hashicorp/terraform-plugin-log/internal/loggertest"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 )
@@ -1857,4 +1858,204 @@ func TestMaskLogStrings(t *testing.T) {
 			}
 		})
 	}
+}
+
+func TestIsTrace(t *testing.T) {
+	t.Parallel()
+
+	testCases := map[string]struct {
+		level    hclog.Level
+		expected bool
+	}{
+		"root-level-trace": {level: hclog.Trace, expected: true},
+		"root-level-debug": {level: hclog.Debug, expected: false},
+		"root-level-info":  {level: hclog.Info, expected: false},
+		"root-level-warn":  {level: hclog.Warn, expected: false},
+		"root-level-error": {level: hclog.Error, expected: false},
+	}
+
+	for name, testCase := range testCases {
+		t.Run(name, func(t *testing.T) {
+			t.Parallel()
+
+			var outputBuffer bytes.Buffer
+
+			ctx := context.Background()
+			ctx = loggertest.ProviderRootWithLevel(ctx, &outputBuffer, testCase.level)
+
+			got := tflog.IsTrace(ctx)
+
+			if got != testCase.expected {
+				t.Errorf("expected %v, got %v", testCase.expected, got)
+			}
+		})
+	}
+
+	t.Run("no-logger", func(t *testing.T) {
+		t.Parallel()
+
+		if got := tflog.IsTrace(context.Background()); got != false {
+			t.Errorf("expected false with no logger in context, got %v", got)
+		}
+	})
+}
+
+func TestIsDebug(t *testing.T) {
+	t.Parallel()
+
+	testCases := map[string]struct {
+		level    hclog.Level
+		expected bool
+	}{
+		"root-level-trace": {level: hclog.Trace, expected: true},
+		"root-level-debug": {level: hclog.Debug, expected: true},
+		"root-level-info":  {level: hclog.Info, expected: false},
+		"root-level-warn":  {level: hclog.Warn, expected: false},
+		"root-level-error": {level: hclog.Error, expected: false},
+	}
+
+	for name, testCase := range testCases {
+		t.Run(name, func(t *testing.T) {
+			t.Parallel()
+
+			var outputBuffer bytes.Buffer
+
+			ctx := context.Background()
+			ctx = loggertest.ProviderRootWithLevel(ctx, &outputBuffer, testCase.level)
+
+			got := tflog.IsDebug(ctx)
+
+			if got != testCase.expected {
+				t.Errorf("expected %v, got %v", testCase.expected, got)
+			}
+		})
+	}
+
+	t.Run("no-logger", func(t *testing.T) {
+		t.Parallel()
+
+		if got := tflog.IsDebug(context.Background()); got != false {
+			t.Errorf("expected false with no logger in context, got %v", got)
+		}
+	})
+}
+
+func TestIsInfo(t *testing.T) {
+	t.Parallel()
+
+	testCases := map[string]struct {
+		level    hclog.Level
+		expected bool
+	}{
+		"root-level-trace": {level: hclog.Trace, expected: true},
+		"root-level-debug": {level: hclog.Debug, expected: true},
+		"root-level-info":  {level: hclog.Info, expected: true},
+		"root-level-warn":  {level: hclog.Warn, expected: false},
+		"root-level-error": {level: hclog.Error, expected: false},
+	}
+
+	for name, testCase := range testCases {
+		t.Run(name, func(t *testing.T) {
+			t.Parallel()
+
+			var outputBuffer bytes.Buffer
+
+			ctx := context.Background()
+			ctx = loggertest.ProviderRootWithLevel(ctx, &outputBuffer, testCase.level)
+
+			got := tflog.IsInfo(ctx)
+
+			if got != testCase.expected {
+				t.Errorf("expected %v, got %v", testCase.expected, got)
+			}
+		})
+	}
+
+	t.Run("no-logger", func(t *testing.T) {
+		t.Parallel()
+
+		if got := tflog.IsInfo(context.Background()); got != false {
+			t.Errorf("expected false with no logger in context, got %v", got)
+		}
+	})
+}
+
+func TestIsWarn(t *testing.T) {
+	t.Parallel()
+
+	testCases := map[string]struct {
+		level    hclog.Level
+		expected bool
+	}{
+		"root-level-trace": {level: hclog.Trace, expected: true},
+		"root-level-debug": {level: hclog.Debug, expected: true},
+		"root-level-info":  {level: hclog.Info, expected: true},
+		"root-level-warn":  {level: hclog.Warn, expected: true},
+		"root-level-error": {level: hclog.Error, expected: false},
+	}
+
+	for name, testCase := range testCases {
+		t.Run(name, func(t *testing.T) {
+			t.Parallel()
+
+			var outputBuffer bytes.Buffer
+
+			ctx := context.Background()
+			ctx = loggertest.ProviderRootWithLevel(ctx, &outputBuffer, testCase.level)
+
+			got := tflog.IsWarn(ctx)
+
+			if got != testCase.expected {
+				t.Errorf("expected %v, got %v", testCase.expected, got)
+			}
+		})
+	}
+
+	t.Run("no-logger", func(t *testing.T) {
+		t.Parallel()
+
+		if got := tflog.IsWarn(context.Background()); got != false {
+			t.Errorf("expected false with no logger in context, got %v", got)
+		}
+	})
+}
+
+func TestIsError(t *testing.T) {
+	t.Parallel()
+
+	testCases := map[string]struct {
+		level    hclog.Level
+		expected bool
+	}{
+		"root-level-trace": {level: hclog.Trace, expected: true},
+		"root-level-debug": {level: hclog.Debug, expected: true},
+		"root-level-info":  {level: hclog.Info, expected: true},
+		"root-level-warn":  {level: hclog.Warn, expected: true},
+		"root-level-error": {level: hclog.Error, expected: true},
+	}
+
+	for name, testCase := range testCases {
+		t.Run(name, func(t *testing.T) {
+			t.Parallel()
+
+			var outputBuffer bytes.Buffer
+
+			ctx := context.Background()
+			ctx = loggertest.ProviderRootWithLevel(ctx, &outputBuffer, testCase.level)
+
+			got := tflog.IsError(ctx)
+
+			if got != testCase.expected {
+				t.Errorf("expected %v, got %v", testCase.expected, got)
+			}
+		})
+	}
+
+	t.Run("no-logger", func(t *testing.T) {
+		t.Parallel()
+
+		if got := tflog.IsError(context.Background()); got != false {
+			t.Errorf("expected false with no logger in context, got %v", got)
+		}
+	})
 }
