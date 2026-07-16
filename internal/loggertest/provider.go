@@ -21,6 +21,18 @@ func ProviderRoot(ctx context.Context, output io.Writer) context.Context {
 	)
 }
 
+// SDKRootWithLevel creates an SDK root logger at the given level.
+// Use this in tests that need to verify behaviour at a specific log level.
+func SDKRootWithLevel(ctx context.Context, output io.Writer, level hclog.Level) context.Context {
+	return tfsdklog.NewRootSDKLogger(
+		ctx,
+		logging.WithoutLocation(),
+		logging.WithoutTimestamp(),
+		logging.WithOutput(output),
+		tfsdklog.WithLevel(level),
+	)
+}
+
 // ProviderRootWithLevel creates a provider root logger at the given level.
 // Use this in tests that need to verify behaviour at a specific log level.
 func ProviderRootWithLevel(ctx context.Context, output io.Writer, level hclog.Level) context.Context {
