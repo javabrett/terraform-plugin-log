@@ -10,6 +10,7 @@ import (
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
+	"github.com/hashicorp/go-hclog"
 	"github.com/hashicorp/terraform-plugin-log/internal/loggertest"
 	"github.com/hashicorp/terraform-plugin-log/tfsdklog"
 )
@@ -1854,6 +1855,146 @@ func TestMaskLogStrings(t *testing.T) {
 
 			if diff := cmp.Diff(testCase.expectedOutput, got); diff != "" {
 				t.Errorf("unexpected output difference: %s", diff)
+			}
+		})
+	}
+}
+
+func TestIsTrace(t *testing.T) {
+	testCases := map[string]struct {
+		level    hclog.Level
+		expected bool
+	}{
+		"root-level-trace": {level: hclog.Trace, expected: true},
+		"root-level-debug": {level: hclog.Debug, expected: false},
+		"root-level-info":  {level: hclog.Info, expected: false},
+		"root-level-warn":  {level: hclog.Warn, expected: false},
+		"root-level-error": {level: hclog.Error, expected: false},
+	}
+
+	for name, testCase := range testCases {
+		t.Run(name, func(t *testing.T) {
+			var outputBuffer bytes.Buffer
+
+			ctx := context.Background()
+			ctx = loggertest.SDKRootWithLevel(ctx, &outputBuffer, testCase.level)
+
+			got := tfsdklog.IsTrace(ctx)
+
+			if got != testCase.expected {
+				t.Errorf("expected %v, got %v", testCase.expected, got)
+			}
+		})
+	}
+}
+
+func TestIsDebug(t *testing.T) {
+	testCases := map[string]struct {
+		level    hclog.Level
+		expected bool
+	}{
+		"root-level-trace": {level: hclog.Trace, expected: true},
+		"root-level-debug": {level: hclog.Debug, expected: true},
+		"root-level-info":  {level: hclog.Info, expected: false},
+		"root-level-warn":  {level: hclog.Warn, expected: false},
+		"root-level-error": {level: hclog.Error, expected: false},
+	}
+
+	for name, testCase := range testCases {
+		t.Run(name, func(t *testing.T) {
+			var outputBuffer bytes.Buffer
+
+			ctx := context.Background()
+			ctx = loggertest.SDKRootWithLevel(ctx, &outputBuffer, testCase.level)
+
+			got := tfsdklog.IsDebug(ctx)
+
+			if got != testCase.expected {
+				t.Errorf("expected %v, got %v", testCase.expected, got)
+			}
+		})
+	}
+}
+
+func TestIsInfo(t *testing.T) {
+	testCases := map[string]struct {
+		level    hclog.Level
+		expected bool
+	}{
+		"root-level-trace": {level: hclog.Trace, expected: true},
+		"root-level-debug": {level: hclog.Debug, expected: true},
+		"root-level-info":  {level: hclog.Info, expected: true},
+		"root-level-warn":  {level: hclog.Warn, expected: false},
+		"root-level-error": {level: hclog.Error, expected: false},
+	}
+
+	for name, testCase := range testCases {
+		t.Run(name, func(t *testing.T) {
+			var outputBuffer bytes.Buffer
+
+			ctx := context.Background()
+			ctx = loggertest.SDKRootWithLevel(ctx, &outputBuffer, testCase.level)
+
+			got := tfsdklog.IsInfo(ctx)
+
+			if got != testCase.expected {
+				t.Errorf("expected %v, got %v", testCase.expected, got)
+			}
+		})
+	}
+}
+
+func TestIsWarn(t *testing.T) {
+	testCases := map[string]struct {
+		level    hclog.Level
+		expected bool
+	}{
+		"root-level-trace": {level: hclog.Trace, expected: true},
+		"root-level-debug": {level: hclog.Debug, expected: true},
+		"root-level-info":  {level: hclog.Info, expected: true},
+		"root-level-warn":  {level: hclog.Warn, expected: true},
+		"root-level-error": {level: hclog.Error, expected: false},
+	}
+
+	for name, testCase := range testCases {
+		t.Run(name, func(t *testing.T) {
+			var outputBuffer bytes.Buffer
+
+			ctx := context.Background()
+			ctx = loggertest.SDKRootWithLevel(ctx, &outputBuffer, testCase.level)
+
+			got := tfsdklog.IsWarn(ctx)
+
+			if got != testCase.expected {
+				t.Errorf("expected %v, got %v", testCase.expected, got)
+			}
+		})
+	}
+}
+
+func TestIsError(t *testing.T) {
+	testCases := map[string]struct {
+		level    hclog.Level
+		expected bool
+	}{
+		"root-level-trace": {level: hclog.Trace, expected: true},
+		"root-level-debug": {level: hclog.Debug, expected: true},
+		"root-level-info":  {level: hclog.Info, expected: true},
+		"root-level-warn":  {level: hclog.Warn, expected: true},
+		"root-level-error": {level: hclog.Error, expected: true},
+	}
+
+	for name, testCase := range testCases {
+		t.Run(name, func(t *testing.T) {
+			var outputBuffer bytes.Buffer
+
+			ctx := context.Background()
+			ctx = loggertest.SDKRootWithLevel(ctx, &outputBuffer, testCase.level)
+
+			got := tfsdklog.IsError(ctx)
+
+			if got != testCase.expected {
+				t.Errorf("expected %v, got %v", testCase.expected, got)
 			}
 		})
 	}
