@@ -246,6 +246,36 @@ func SubsystemError(ctx context.Context, subsystem, msg string, additionalFields
 	logger.Error(msg, additionalArgs...)
 }
 
+// SubsystemIsTrace returns true if the subsystem SDK logger would emit a trace-level log.
+// The check is performed against a cached level for performance.
+func SubsystemIsTrace(_ context.Context, subsystem string) bool {
+	return subsystemWouldLog(subsystem, hclog.Trace)
+}
+
+// SubsystemIsDebug returns true if the subsystem SDK logger would emit a debug-level log.
+// The check is performed against a cached level for performance.
+func SubsystemIsDebug(_ context.Context, subsystem string) bool {
+	return subsystemWouldLog(subsystem, hclog.Debug)
+}
+
+// SubsystemIsInfo returns true if the subsystem SDK logger would emit an info-level log.
+// The check is performed against a cached level for performance.
+func SubsystemIsInfo(_ context.Context, subsystem string) bool {
+	return subsystemWouldLog(subsystem, hclog.Info)
+}
+
+// SubsystemIsWarn returns true if the subsystem SDK logger would emit a warn-level log.
+// The check is performed against a cached level for performance.
+func SubsystemIsWarn(_ context.Context, subsystem string) bool {
+	return subsystemWouldLog(subsystem, hclog.Warn)
+}
+
+// SubsystemIsError returns true if the subsystem SDK logger would emit an error-level log.
+// The check is performed against a cached level for performance.
+func SubsystemIsError(_ context.Context, subsystem string) bool {
+	return subsystemWouldLog(subsystem, hclog.Error)
+}
+
 // SubsystemOmitLogWithFieldKeys returns a new context.Context that has a modified logger
 // that will omit to write any log when any of the given keys is found
 // within its fields.
