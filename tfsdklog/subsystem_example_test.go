@@ -408,3 +408,28 @@ func ExampleSubsystemMaskLogStrings() {
 	// Output:
 	// {"@level":"trace","@message":"example log ***","@module":"sdk.my-subsystem","k1":"*** plus some text","k2":"*** plus more text"}
 }
+
+func ExampleSubsystemIsTrace() {
+	// this function calls new with the options it needs to be reliably
+	// tested. framework and sdk developers should call new, inject the
+	// resulting context in their framework, and then pass it around. this
+	// examplectx is a stand-in for a context you have injected a logger
+	// into and passed to the area of the codebase you need it.
+	exampleCtx := getExampleContext()
+
+	// register a new subsystem before using it
+	exampleCtx = NewSubsystem(exampleCtx, "my-subsystem")
+
+	// non-example-setup code begins here
+
+	// use SubsystemIsTrace to skip building fields when trace logging is not enabled
+	if SubsystemIsTrace(exampleCtx, "my-subsystem") {
+		fields := map[string]interface{}{
+			"computed-key": "computed-value",
+		}
+		SubsystemTrace(exampleCtx, "my-subsystem", "hello, world", fields)
+	}
+
+	// Output:
+	// {"@level":"trace","@message":"hello, world","@module":"sdk.my-subsystem","computed-key":"computed-value"}
+}
