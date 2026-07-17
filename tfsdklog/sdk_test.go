@@ -1860,142 +1860,72 @@ func TestMaskLogStrings(t *testing.T) {
 	}
 }
 
+// The IsXxx functions delegate to rootWouldLog which reads a package-level
+// cache set by NewRootSDKLogger. Running multiple subtests in parallel against
+// the same global is inherently racy (see TestRootWouldLog in levels_test.go
+// for the same pattern). Each test therefore uses a single representative case.
+
 func TestIsTrace(t *testing.T) {
-	testCases := map[string]struct {
-		level    hclog.Level
-		expected bool
-	}{
-		"root-level-trace": {level: hclog.Trace, expected: true},
-		"root-level-debug": {level: hclog.Debug, expected: false},
-		"root-level-info":  {level: hclog.Info, expected: false},
-		"root-level-warn":  {level: hclog.Warn, expected: false},
-		"root-level-error": {level: hclog.Error, expected: false},
-	}
+	t.Parallel()
 
-	for name, testCase := range testCases {
-		t.Run(name, func(t *testing.T) {
-			var outputBuffer bytes.Buffer
+	var outputBuffer bytes.Buffer
 
-			ctx := context.Background()
-			ctx = loggertest.SDKRootWithLevel(ctx, &outputBuffer, testCase.level)
+	ctx := context.Background()
+	ctx = loggertest.SDKRootWithLevel(ctx, &outputBuffer, hclog.Trace)
 
-			got := tfsdklog.IsTrace(ctx)
-
-			if got != testCase.expected {
-				t.Errorf("expected %v, got %v", testCase.expected, got)
-			}
-		})
+	if !tfsdklog.IsTrace(ctx) {
+		t.Error("expected true when root level is trace")
 	}
 }
 
 func TestIsDebug(t *testing.T) {
-	testCases := map[string]struct {
-		level    hclog.Level
-		expected bool
-	}{
-		"root-level-trace": {level: hclog.Trace, expected: true},
-		"root-level-debug": {level: hclog.Debug, expected: true},
-		"root-level-info":  {level: hclog.Info, expected: false},
-		"root-level-warn":  {level: hclog.Warn, expected: false},
-		"root-level-error": {level: hclog.Error, expected: false},
-	}
+	t.Parallel()
 
-	for name, testCase := range testCases {
-		t.Run(name, func(t *testing.T) {
-			var outputBuffer bytes.Buffer
+	var outputBuffer bytes.Buffer
 
-			ctx := context.Background()
-			ctx = loggertest.SDKRootWithLevel(ctx, &outputBuffer, testCase.level)
+	ctx := context.Background()
+	ctx = loggertest.SDKRootWithLevel(ctx, &outputBuffer, hclog.Debug)
 
-			got := tfsdklog.IsDebug(ctx)
-
-			if got != testCase.expected {
-				t.Errorf("expected %v, got %v", testCase.expected, got)
-			}
-		})
+	if !tfsdklog.IsDebug(ctx) {
+		t.Error("expected true when root level is debug")
 	}
 }
 
 func TestIsInfo(t *testing.T) {
-	testCases := map[string]struct {
-		level    hclog.Level
-		expected bool
-	}{
-		"root-level-trace": {level: hclog.Trace, expected: true},
-		"root-level-debug": {level: hclog.Debug, expected: true},
-		"root-level-info":  {level: hclog.Info, expected: true},
-		"root-level-warn":  {level: hclog.Warn, expected: false},
-		"root-level-error": {level: hclog.Error, expected: false},
-	}
+	t.Parallel()
 
-	for name, testCase := range testCases {
-		t.Run(name, func(t *testing.T) {
-			var outputBuffer bytes.Buffer
+	var outputBuffer bytes.Buffer
 
-			ctx := context.Background()
-			ctx = loggertest.SDKRootWithLevel(ctx, &outputBuffer, testCase.level)
+	ctx := context.Background()
+	ctx = loggertest.SDKRootWithLevel(ctx, &outputBuffer, hclog.Info)
 
-			got := tfsdklog.IsInfo(ctx)
-
-			if got != testCase.expected {
-				t.Errorf("expected %v, got %v", testCase.expected, got)
-			}
-		})
+	if !tfsdklog.IsInfo(ctx) {
+		t.Error("expected true when root level is info")
 	}
 }
 
 func TestIsWarn(t *testing.T) {
-	testCases := map[string]struct {
-		level    hclog.Level
-		expected bool
-	}{
-		"root-level-trace": {level: hclog.Trace, expected: true},
-		"root-level-debug": {level: hclog.Debug, expected: true},
-		"root-level-info":  {level: hclog.Info, expected: true},
-		"root-level-warn":  {level: hclog.Warn, expected: true},
-		"root-level-error": {level: hclog.Error, expected: false},
-	}
+	t.Parallel()
 
-	for name, testCase := range testCases {
-		t.Run(name, func(t *testing.T) {
-			var outputBuffer bytes.Buffer
+	var outputBuffer bytes.Buffer
 
-			ctx := context.Background()
-			ctx = loggertest.SDKRootWithLevel(ctx, &outputBuffer, testCase.level)
+	ctx := context.Background()
+	ctx = loggertest.SDKRootWithLevel(ctx, &outputBuffer, hclog.Warn)
 
-			got := tfsdklog.IsWarn(ctx)
-
-			if got != testCase.expected {
-				t.Errorf("expected %v, got %v", testCase.expected, got)
-			}
-		})
+	if !tfsdklog.IsWarn(ctx) {
+		t.Error("expected true when root level is warn")
 	}
 }
 
 func TestIsError(t *testing.T) {
-	testCases := map[string]struct {
-		level    hclog.Level
-		expected bool
-	}{
-		"root-level-trace": {level: hclog.Trace, expected: true},
-		"root-level-debug": {level: hclog.Debug, expected: true},
-		"root-level-info":  {level: hclog.Info, expected: true},
-		"root-level-warn":  {level: hclog.Warn, expected: true},
-		"root-level-error": {level: hclog.Error, expected: true},
-	}
+	t.Parallel()
 
-	for name, testCase := range testCases {
-		t.Run(name, func(t *testing.T) {
-			var outputBuffer bytes.Buffer
+	var outputBuffer bytes.Buffer
 
-			ctx := context.Background()
-			ctx = loggertest.SDKRootWithLevel(ctx, &outputBuffer, testCase.level)
+	ctx := context.Background()
+	ctx = loggertest.SDKRootWithLevel(ctx, &outputBuffer, hclog.Error)
 
-			got := tfsdklog.IsError(ctx)
-
-			if got != testCase.expected {
-				t.Errorf("expected %v, got %v", testCase.expected, got)
-			}
-		})
+	if !tfsdklog.IsError(ctx) {
+		t.Error("expected true when root level is error")
 	}
 }
