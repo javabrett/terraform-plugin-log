@@ -219,6 +219,51 @@ func SubsystemError(ctx context.Context, subsystem, msg string, additionalFields
 	logger.Error(msg, additionalArgs...)
 }
 
+// SubsystemIsTrace returns true if the subsystem logger in ctx would emit a trace-level log.
+func SubsystemIsTrace(ctx context.Context, subsystem string) bool {
+	logger := logging.GetProviderSubsystemLogger(ctx, subsystem)
+	if logger == nil {
+		return false
+	}
+	return logger.IsTrace()
+}
+
+// SubsystemIsDebug returns true if the subsystem logger in ctx would emit a debug-level log.
+func SubsystemIsDebug(ctx context.Context, subsystem string) bool {
+	logger := logging.GetProviderSubsystemLogger(ctx, subsystem)
+	if logger == nil {
+		return false
+	}
+	return logger.IsDebug()
+}
+
+// SubsystemIsInfo returns true if the subsystem logger in ctx would emit an info-level log.
+func SubsystemIsInfo(ctx context.Context, subsystem string) bool {
+	logger := logging.GetProviderSubsystemLogger(ctx, subsystem)
+	if logger == nil {
+		return false
+	}
+	return logger.IsInfo()
+}
+
+// SubsystemIsWarn returns true if the subsystem logger in ctx would emit a warn-level log.
+func SubsystemIsWarn(ctx context.Context, subsystem string) bool {
+	logger := logging.GetProviderSubsystemLogger(ctx, subsystem)
+	if logger == nil {
+		return false
+	}
+	return logger.IsWarn()
+}
+
+// SubsystemIsError returns true if the subsystem logger in ctx would emit an error-level log.
+func SubsystemIsError(ctx context.Context, subsystem string) bool {
+	logger := logging.GetProviderSubsystemLogger(ctx, subsystem)
+	if logger == nil {
+		return false
+	}
+	return logger.IsError()
+}
+
 // SubsystemOmitLogWithFieldKeys returns a new context.Context that has a modified logger
 // that will omit to write any log when any of the given keys is found
 // within its fields.

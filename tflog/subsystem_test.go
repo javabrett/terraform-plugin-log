@@ -10,6 +10,7 @@ import (
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
+	"github.com/hashicorp/go-hclog"
 	"github.com/hashicorp/terraform-plugin-log/internal/loggertest"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 )
@@ -1885,4 +1886,234 @@ func TestSubsystemMaskLogStrings(t *testing.T) {
 			}
 		})
 	}
+}
+
+func TestSubsystemIsTrace(t *testing.T) {
+	t.Parallel()
+
+	testCases := map[string]struct {
+		level    hclog.Level
+		expected bool
+	}{
+		"subsystem-level-trace": {level: hclog.Trace, expected: true},
+		"subsystem-level-debug": {level: hclog.Debug, expected: false},
+		"subsystem-level-info":  {level: hclog.Info, expected: false},
+		"subsystem-level-warn":  {level: hclog.Warn, expected: false},
+		"subsystem-level-error": {level: hclog.Error, expected: false},
+	}
+
+	for name, testCase := range testCases {
+		t.Run(name, func(t *testing.T) {
+			t.Parallel()
+
+			var outputBuffer bytes.Buffer
+
+			ctx := context.Background()
+			ctx = loggertest.ProviderRoot(ctx, &outputBuffer)
+			ctx = tflog.NewSubsystem(ctx, testSubsystem, tflog.WithLevel(testCase.level))
+
+			got := tflog.SubsystemIsTrace(ctx, testSubsystem)
+
+			if got != testCase.expected {
+				t.Errorf("expected %v, got %v", testCase.expected, got)
+			}
+		})
+	}
+
+	t.Run("no-subsystem", func(t *testing.T) {
+		t.Parallel()
+
+		var outputBuffer bytes.Buffer
+
+		ctx := context.Background()
+		ctx = loggertest.ProviderRoot(ctx, &outputBuffer)
+
+		if got := tflog.SubsystemIsTrace(ctx, testSubsystem); got != false {
+			t.Errorf("expected false with no subsystem in context, got %v", got)
+		}
+	})
+}
+
+func TestSubsystemIsDebug(t *testing.T) {
+	t.Parallel()
+
+	testCases := map[string]struct {
+		level    hclog.Level
+		expected bool
+	}{
+		"subsystem-level-trace": {level: hclog.Trace, expected: true},
+		"subsystem-level-debug": {level: hclog.Debug, expected: true},
+		"subsystem-level-info":  {level: hclog.Info, expected: false},
+		"subsystem-level-warn":  {level: hclog.Warn, expected: false},
+		"subsystem-level-error": {level: hclog.Error, expected: false},
+	}
+
+	for name, testCase := range testCases {
+		t.Run(name, func(t *testing.T) {
+			t.Parallel()
+
+			var outputBuffer bytes.Buffer
+
+			ctx := context.Background()
+			ctx = loggertest.ProviderRoot(ctx, &outputBuffer)
+			ctx = tflog.NewSubsystem(ctx, testSubsystem, tflog.WithLevel(testCase.level))
+
+			got := tflog.SubsystemIsDebug(ctx, testSubsystem)
+
+			if got != testCase.expected {
+				t.Errorf("expected %v, got %v", testCase.expected, got)
+			}
+		})
+	}
+
+	t.Run("no-subsystem", func(t *testing.T) {
+		t.Parallel()
+
+		var outputBuffer bytes.Buffer
+
+		ctx := context.Background()
+		ctx = loggertest.ProviderRoot(ctx, &outputBuffer)
+
+		if got := tflog.SubsystemIsDebug(ctx, testSubsystem); got != false {
+			t.Errorf("expected false with no subsystem in context, got %v", got)
+		}
+	})
+}
+
+func TestSubsystemIsInfo(t *testing.T) {
+	t.Parallel()
+
+	testCases := map[string]struct {
+		level    hclog.Level
+		expected bool
+	}{
+		"subsystem-level-trace": {level: hclog.Trace, expected: true},
+		"subsystem-level-debug": {level: hclog.Debug, expected: true},
+		"subsystem-level-info":  {level: hclog.Info, expected: true},
+		"subsystem-level-warn":  {level: hclog.Warn, expected: false},
+		"subsystem-level-error": {level: hclog.Error, expected: false},
+	}
+
+	for name, testCase := range testCases {
+		t.Run(name, func(t *testing.T) {
+			t.Parallel()
+
+			var outputBuffer bytes.Buffer
+
+			ctx := context.Background()
+			ctx = loggertest.ProviderRoot(ctx, &outputBuffer)
+			ctx = tflog.NewSubsystem(ctx, testSubsystem, tflog.WithLevel(testCase.level))
+
+			got := tflog.SubsystemIsInfo(ctx, testSubsystem)
+
+			if got != testCase.expected {
+				t.Errorf("expected %v, got %v", testCase.expected, got)
+			}
+		})
+	}
+
+	t.Run("no-subsystem", func(t *testing.T) {
+		t.Parallel()
+
+		var outputBuffer bytes.Buffer
+
+		ctx := context.Background()
+		ctx = loggertest.ProviderRoot(ctx, &outputBuffer)
+
+		if got := tflog.SubsystemIsInfo(ctx, testSubsystem); got != false {
+			t.Errorf("expected false with no subsystem in context, got %v", got)
+		}
+	})
+}
+
+func TestSubsystemIsWarn(t *testing.T) {
+	t.Parallel()
+
+	testCases := map[string]struct {
+		level    hclog.Level
+		expected bool
+	}{
+		"subsystem-level-trace": {level: hclog.Trace, expected: true},
+		"subsystem-level-debug": {level: hclog.Debug, expected: true},
+		"subsystem-level-info":  {level: hclog.Info, expected: true},
+		"subsystem-level-warn":  {level: hclog.Warn, expected: true},
+		"subsystem-level-error": {level: hclog.Error, expected: false},
+	}
+
+	for name, testCase := range testCases {
+		t.Run(name, func(t *testing.T) {
+			t.Parallel()
+
+			var outputBuffer bytes.Buffer
+
+			ctx := context.Background()
+			ctx = loggertest.ProviderRoot(ctx, &outputBuffer)
+			ctx = tflog.NewSubsystem(ctx, testSubsystem, tflog.WithLevel(testCase.level))
+
+			got := tflog.SubsystemIsWarn(ctx, testSubsystem)
+
+			if got != testCase.expected {
+				t.Errorf("expected %v, got %v", testCase.expected, got)
+			}
+		})
+	}
+
+	t.Run("no-subsystem", func(t *testing.T) {
+		t.Parallel()
+
+		var outputBuffer bytes.Buffer
+
+		ctx := context.Background()
+		ctx = loggertest.ProviderRoot(ctx, &outputBuffer)
+
+		if got := tflog.SubsystemIsWarn(ctx, testSubsystem); got != false {
+			t.Errorf("expected false with no subsystem in context, got %v", got)
+		}
+	})
+}
+
+func TestSubsystemIsError(t *testing.T) {
+	t.Parallel()
+
+	testCases := map[string]struct {
+		level    hclog.Level
+		expected bool
+	}{
+		"subsystem-level-trace": {level: hclog.Trace, expected: true},
+		"subsystem-level-debug": {level: hclog.Debug, expected: true},
+		"subsystem-level-info":  {level: hclog.Info, expected: true},
+		"subsystem-level-warn":  {level: hclog.Warn, expected: true},
+		"subsystem-level-error": {level: hclog.Error, expected: true},
+	}
+
+	for name, testCase := range testCases {
+		t.Run(name, func(t *testing.T) {
+			t.Parallel()
+
+			var outputBuffer bytes.Buffer
+
+			ctx := context.Background()
+			ctx = loggertest.ProviderRoot(ctx, &outputBuffer)
+			ctx = tflog.NewSubsystem(ctx, testSubsystem, tflog.WithLevel(testCase.level))
+
+			got := tflog.SubsystemIsError(ctx, testSubsystem)
+
+			if got != testCase.expected {
+				t.Errorf("expected %v, got %v", testCase.expected, got)
+			}
+		})
+	}
+
+	t.Run("no-subsystem", func(t *testing.T) {
+		t.Parallel()
+
+		var outputBuffer bytes.Buffer
+
+		ctx := context.Background()
+		ctx = loggertest.ProviderRoot(ctx, &outputBuffer)
+
+		if got := tflog.SubsystemIsError(ctx, testSubsystem); got != false {
+			t.Errorf("expected false with no subsystem in context, got %v", got)
+		}
+	})
 }

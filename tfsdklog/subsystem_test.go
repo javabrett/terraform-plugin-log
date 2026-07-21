@@ -1908,3 +1908,233 @@ func TestSubsystemMaskLogStrings(t *testing.T) {
 		})
 	}
 }
+
+func TestSubsystemIsTrace(t *testing.T) {
+	t.Parallel()
+
+	testCases := map[string]struct {
+		level    hclog.Level
+		expected bool
+	}{
+		"subsystem-level-trace": {level: hclog.Trace, expected: true},
+		"subsystem-level-debug": {level: hclog.Debug, expected: false},
+		"subsystem-level-info":  {level: hclog.Info, expected: false},
+		"subsystem-level-warn":  {level: hclog.Warn, expected: false},
+		"subsystem-level-error": {level: hclog.Error, expected: false},
+	}
+
+	for name, testCase := range testCases {
+		t.Run(name, func(t *testing.T) {
+			t.Parallel()
+
+			var outputBuffer bytes.Buffer
+
+			ctx := context.Background()
+			ctx = loggertest.SDKRoot(ctx, &outputBuffer)
+			ctx = tfsdklog.NewSubsystem(ctx, t.Name(), tfsdklog.WithLevel(testCase.level))
+
+			got := tfsdklog.SubsystemIsTrace(ctx, t.Name())
+
+			if got != testCase.expected {
+				t.Errorf("expected %v, got %v", testCase.expected, got)
+			}
+		})
+	}
+
+	t.Run("no-subsystem", func(t *testing.T) {
+		t.Parallel()
+
+		var outputBuffer bytes.Buffer
+
+		ctx := context.Background()
+		ctx = loggertest.SDKRoot(ctx, &outputBuffer)
+
+		if got := tfsdklog.SubsystemIsTrace(ctx, t.Name()); got != false {
+			t.Errorf("expected false with unregistered subsystem, got %v", got)
+		}
+	})
+}
+
+func TestSubsystemIsDebug(t *testing.T) {
+	t.Parallel()
+
+	testCases := map[string]struct {
+		level    hclog.Level
+		expected bool
+	}{
+		"subsystem-level-trace": {level: hclog.Trace, expected: true},
+		"subsystem-level-debug": {level: hclog.Debug, expected: true},
+		"subsystem-level-info":  {level: hclog.Info, expected: false},
+		"subsystem-level-warn":  {level: hclog.Warn, expected: false},
+		"subsystem-level-error": {level: hclog.Error, expected: false},
+	}
+
+	for name, testCase := range testCases {
+		t.Run(name, func(t *testing.T) {
+			t.Parallel()
+
+			var outputBuffer bytes.Buffer
+
+			ctx := context.Background()
+			ctx = loggertest.SDKRoot(ctx, &outputBuffer)
+			ctx = tfsdklog.NewSubsystem(ctx, t.Name(), tfsdklog.WithLevel(testCase.level))
+
+			got := tfsdklog.SubsystemIsDebug(ctx, t.Name())
+
+			if got != testCase.expected {
+				t.Errorf("expected %v, got %v", testCase.expected, got)
+			}
+		})
+	}
+
+	t.Run("no-subsystem", func(t *testing.T) {
+		t.Parallel()
+
+		var outputBuffer bytes.Buffer
+
+		ctx := context.Background()
+		ctx = loggertest.SDKRoot(ctx, &outputBuffer)
+
+		if got := tfsdklog.SubsystemIsDebug(ctx, t.Name()); got != false {
+			t.Errorf("expected false with unregistered subsystem, got %v", got)
+		}
+	})
+}
+
+func TestSubsystemIsInfo(t *testing.T) {
+	t.Parallel()
+
+	testCases := map[string]struct {
+		level    hclog.Level
+		expected bool
+	}{
+		"subsystem-level-trace": {level: hclog.Trace, expected: true},
+		"subsystem-level-debug": {level: hclog.Debug, expected: true},
+		"subsystem-level-info":  {level: hclog.Info, expected: true},
+		"subsystem-level-warn":  {level: hclog.Warn, expected: false},
+		"subsystem-level-error": {level: hclog.Error, expected: false},
+	}
+
+	for name, testCase := range testCases {
+		t.Run(name, func(t *testing.T) {
+			t.Parallel()
+
+			var outputBuffer bytes.Buffer
+
+			ctx := context.Background()
+			ctx = loggertest.SDKRoot(ctx, &outputBuffer)
+			ctx = tfsdklog.NewSubsystem(ctx, t.Name(), tfsdklog.WithLevel(testCase.level))
+
+			got := tfsdklog.SubsystemIsInfo(ctx, t.Name())
+
+			if got != testCase.expected {
+				t.Errorf("expected %v, got %v", testCase.expected, got)
+			}
+		})
+	}
+
+	t.Run("no-subsystem", func(t *testing.T) {
+		t.Parallel()
+
+		var outputBuffer bytes.Buffer
+
+		ctx := context.Background()
+		ctx = loggertest.SDKRoot(ctx, &outputBuffer)
+
+		if got := tfsdklog.SubsystemIsInfo(ctx, t.Name()); got != false {
+			t.Errorf("expected false with unregistered subsystem, got %v", got)
+		}
+	})
+}
+
+func TestSubsystemIsWarn(t *testing.T) {
+	t.Parallel()
+
+	testCases := map[string]struct {
+		level    hclog.Level
+		expected bool
+	}{
+		"subsystem-level-trace": {level: hclog.Trace, expected: true},
+		"subsystem-level-debug": {level: hclog.Debug, expected: true},
+		"subsystem-level-info":  {level: hclog.Info, expected: true},
+		"subsystem-level-warn":  {level: hclog.Warn, expected: true},
+		"subsystem-level-error": {level: hclog.Error, expected: false},
+	}
+
+	for name, testCase := range testCases {
+		t.Run(name, func(t *testing.T) {
+			t.Parallel()
+
+			var outputBuffer bytes.Buffer
+
+			ctx := context.Background()
+			ctx = loggertest.SDKRoot(ctx, &outputBuffer)
+			ctx = tfsdklog.NewSubsystem(ctx, t.Name(), tfsdklog.WithLevel(testCase.level))
+
+			got := tfsdklog.SubsystemIsWarn(ctx, t.Name())
+
+			if got != testCase.expected {
+				t.Errorf("expected %v, got %v", testCase.expected, got)
+			}
+		})
+	}
+
+	t.Run("no-subsystem", func(t *testing.T) {
+		t.Parallel()
+
+		var outputBuffer bytes.Buffer
+
+		ctx := context.Background()
+		ctx = loggertest.SDKRoot(ctx, &outputBuffer)
+
+		if got := tfsdklog.SubsystemIsWarn(ctx, t.Name()); got != false {
+			t.Errorf("expected false with unregistered subsystem, got %v", got)
+		}
+	})
+}
+
+func TestSubsystemIsError(t *testing.T) {
+	t.Parallel()
+
+	testCases := map[string]struct {
+		level    hclog.Level
+		expected bool
+	}{
+		"subsystem-level-trace": {level: hclog.Trace, expected: true},
+		"subsystem-level-debug": {level: hclog.Debug, expected: true},
+		"subsystem-level-info":  {level: hclog.Info, expected: true},
+		"subsystem-level-warn":  {level: hclog.Warn, expected: true},
+		"subsystem-level-error": {level: hclog.Error, expected: true},
+	}
+
+	for name, testCase := range testCases {
+		t.Run(name, func(t *testing.T) {
+			t.Parallel()
+
+			var outputBuffer bytes.Buffer
+
+			ctx := context.Background()
+			ctx = loggertest.SDKRoot(ctx, &outputBuffer)
+			ctx = tfsdklog.NewSubsystem(ctx, t.Name(), tfsdklog.WithLevel(testCase.level))
+
+			got := tfsdklog.SubsystemIsError(ctx, t.Name())
+
+			if got != testCase.expected {
+				t.Errorf("expected %v, got %v", testCase.expected, got)
+			}
+		})
+	}
+
+	t.Run("no-subsystem", func(t *testing.T) {
+		t.Parallel()
+
+		var outputBuffer bytes.Buffer
+
+		ctx := context.Background()
+		ctx = loggertest.SDKRoot(ctx, &outputBuffer)
+
+		if got := tfsdklog.SubsystemIsError(ctx, t.Name()); got != false {
+			t.Errorf("expected false with unregistered subsystem, got %v", got)
+		}
+	})
+}

@@ -365,3 +365,27 @@ func ExampleMaskLogStrings() {
 	// Output:
 	// {"@level":"trace","@message":"example log ***","@module":"provider","k1":"*** plus some text","k2":"*** plus more text"}
 }
+
+func ExampleIsTrace() {
+	// virtually no plugin developers will need to worry about
+	// instantiating loggers, as the libraries they're using will take care
+	// of that, but we're not using those libraries in these examples. So
+	// we need to do the injection ourselves. Plugin developers will
+	// basically never need to do this, so the next line can safely be
+	// considered setup for the example and ignored. Instead, use the
+	// context passed in by the framework or library you're using.
+	exampleCtx := getExampleContext()
+
+	// non-example-setup code begins here
+
+	// use IsTrace to skip building fields when trace logging is not enabled
+	if IsTrace(exampleCtx) {
+		fields := map[string]interface{}{
+			"computed-key": "computed-value",
+		}
+		Trace(exampleCtx, "hello, world", fields)
+	}
+
+	// Output:
+	// {"@level":"trace","@message":"hello, world","@module":"provider","computed-key":"computed-value"}
+}

@@ -10,6 +10,7 @@ import (
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
+	"github.com/hashicorp/go-hclog"
 	"github.com/hashicorp/terraform-plugin-log/internal/loggertest"
 	"github.com/hashicorp/terraform-plugin-log/tfsdklog"
 )
@@ -1856,5 +1857,75 @@ func TestMaskLogStrings(t *testing.T) {
 				t.Errorf("unexpected output difference: %s", diff)
 			}
 		})
+	}
+}
+
+// The IsXxx functions delegate to rootWouldLog which reads a package-level
+// cache set by NewRootSDKLogger. Running multiple subtests in parallel against
+// the same global is inherently racy (see TestRootWouldLog in levels_test.go
+// for the same pattern). Each test therefore uses a single representative case.
+
+func TestIsTrace(t *testing.T) {
+	t.Parallel()
+
+	var outputBuffer bytes.Buffer
+
+	ctx := context.Background()
+	ctx = loggertest.SDKRootWithLevel(ctx, &outputBuffer, hclog.Trace)
+
+	if !tfsdklog.IsTrace(ctx) {
+		t.Error("expected true when root level is trace")
+	}
+}
+
+func TestIsDebug(t *testing.T) {
+	t.Parallel()
+
+	var outputBuffer bytes.Buffer
+
+	ctx := context.Background()
+	ctx = loggertest.SDKRootWithLevel(ctx, &outputBuffer, hclog.Debug)
+
+	if !tfsdklog.IsDebug(ctx) {
+		t.Error("expected true when root level is debug")
+	}
+}
+
+func TestIsInfo(t *testing.T) {
+	t.Parallel()
+
+	var outputBuffer bytes.Buffer
+
+	ctx := context.Background()
+	ctx = loggertest.SDKRootWithLevel(ctx, &outputBuffer, hclog.Info)
+
+	if !tfsdklog.IsInfo(ctx) {
+		t.Error("expected true when root level is info")
+	}
+}
+
+func TestIsWarn(t *testing.T) {
+	t.Parallel()
+
+	var outputBuffer bytes.Buffer
+
+	ctx := context.Background()
+	ctx = loggertest.SDKRootWithLevel(ctx, &outputBuffer, hclog.Warn)
+
+	if !tfsdklog.IsWarn(ctx) {
+		t.Error("expected true when root level is warn")
+	}
+}
+
+func TestIsError(t *testing.T) {
+	t.Parallel()
+
+	var outputBuffer bytes.Buffer
+
+	ctx := context.Background()
+	ctx = loggertest.SDKRootWithLevel(ctx, &outputBuffer, hclog.Error)
+
+	if !tfsdklog.IsError(ctx) {
+		t.Error("expected true when root level is error")
 	}
 }
