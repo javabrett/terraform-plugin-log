@@ -1,3 +1,9 @@
+## 0.11.0 (July 31, 2026)
+
+NOTES:
+
+* This Go module has been updated to Go 1.25 per the [Go support policy](https://golang.org/doc/devel/release.html#policy). Any consumers building on earlier Go versions may experience errors. ([#285](https://github.com/hashicorp/terraform-plugin-log/issues/285))
+
 ## 0.10.0 (November 13, 2025)
 
 NOTES:
